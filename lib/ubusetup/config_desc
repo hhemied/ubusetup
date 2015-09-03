@@ -1,0 +1,16 @@
+config command helps users for new ubuntu installation or even to update, upgrade and install some additional softwares which help you using Ubuntu comfotably.
+
+Example
+================
+$> ubustp config
+================
+Benefits
+================
+=> Tweak you Ubuntu.
+=> Protect Privacy.
+=> Disable Overlay Scrollbar.
+=> Show Username on Panel.
+=> Install Flash Player.
+=> Install Pipelight.
+=> Compression/Decompression tools.
+And more.
