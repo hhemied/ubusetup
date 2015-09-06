@@ -17,8 +17,8 @@ module Ubusetup
     def config
       check_connection
       if @pt.ping?
-        puts set_color "You can do a lot :\n", :cyan
-        puts set_color %Q{Choose any item from the list to start :
+        puts set_color " You can do a lot :\n", :cyan
+        puts set_color %Q{ Choose any item from the list to start :
             1 => Update My System
             2 => Tweak My System.
             3 => Protect Privacy.
@@ -41,40 +41,48 @@ module Ubusetup
           case item
           when 1
             puts set_color "[ Updating your system ]", :cyan
-            puts set_color " \n=> May takes time depends on your internet speed ", :cyan
+            puts set_color " \n<< May takes time depends on your internet speed >>", :cyan
             puts set_color "\n-----------------------------------------------------\n", :cyan
-            fork { system("sudo apt-get update && sudo apt-get upgrade -y") }
+            fork { system(" sudo apt-get update && sudo apt-get upgrade -y") }
             Process.wait
             $?.to_i
             if $?.exitstatus == 0
-              puts set_color "Your system is up to date", :green
+              puts set_color " Your system is up to date", :green
             else
-              puts set_color "Not updated correctly", :red
+              puts set_color " Not updated correctly", :red
             end
           when 2
-            puts set_color "Tweaking your Ubuntu ......", :cyan
+            puts set_color " Fixing language ", :cyan
+            File.readlines("./lib/ubusetup/lang_local") do |line|
+              fork {system("sudo update-locale #{line}=en_US.UTF-8")}
+              Process.wait
+            end
+            puts set_color %Q{ Now : You need to logout and login again to apply.}, :green
+
+          when 3
+            puts set_color " Tweaking your Ubuntu ......", :cyan
             puts "----------------------------"
-            puts set_color "installing Unity-Tweak-tool and Gnome-Tweak-tool", :cyan
+            puts set_color " Installing Unity-Tweak-tool and Gnome-Tweak-tool", :cyan
             fork {system("sudo apt-get install unity-tweak-tool gnome-tweak-tool")}
             Process.wait
             $?.to_i
             if $?.exitstatus == 0
-              puts set_color "Installing compizconfig-settings-manager ...", :cyan
+              puts set_color " Installing compizconfig-settings-manager ...", :cyan
               fork {system("apt-get install compizconfig-settings-manager")}
               Process.wait
               $?.to_i
               if $?.exitstatus == 0
-                puts set_color %Q{Now : Go to Dash and Search "CCSM" >
+                puts set_color %Q{ Now : Go to Dash and Search "CCSM" >
                 Then go to Unity plugin >
                 Tick 'Minimize Single Window Applications' feature}, :cyan
               else
-                puts set_color "< Compizconfig-setting-manager > did not install correctly ", :red
+                puts set_color " < Compizconfig-setting-manager > did not install correctly ", :red
               end
             else
-              puts set_color "Something happened and package could not install well", :red
+              puts set_color " Something happened and package could not install well", :red
             end
           else
-            puts set_color "Sorry, nothing with this choice ", :red
+            puts set_color " Sorry, nothing with this choice ", :red
             # end of case
           end
           # end of if item
@@ -92,12 +100,12 @@ module Ubusetup
     def check_connection
       Ping::TCP.service_check = true
       @pt = Net::Ping::TCP.new("www.google.com")
-      puts set_color "Checking Internet Connection.....", :green
+      puts set_color " Checking Internet Connection.....", :green
       if @pt.ping?
-        puts set_color "Internet is working....", :green
-        puts set_color "Please use : [ linuxhelper --help ] for more information", :cyan
+        puts set_color " Internet is working....", :green
+        puts set_color " Please use : [ ubusetup --help ] for more information", :cyan
       else
-        puts set_color "Sorry, No internet connection found", :red
+        puts set_color " Please, check internet connection", :red
       end
       # End of method < check_connection >
     end
